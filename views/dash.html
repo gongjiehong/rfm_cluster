@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>RFM聚类分析</title>
+        <link rel="stylesheet" href="/statics/layui/css/layui.css" />
+        <script src="/statics/layui/layui.js"></script>
+    </head>
+    <body>
+        <div class="layui-bg-gray" style="padding: 16px">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-xs6">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><h1>原始数据特征</h1></div>
+                        <div class="layui-card-body">
+                            <div class="layui-container">
+                                <!-- 统计数据卡片 -->
+                                <div class="layui-row layui-col-space15">
+                                    <div class="layui-col-xs3">
+                                        <div class="stats-card">
+                                            <h3>R(最近一次消费)</h3>
+                                            <table class="layui-table">
+                                                <tr>
+                                                    <td>最小值</td>
+                                                    <td id="f-stddev">{{.processedData.r.min}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>最大值</td>
+                                                    <td id="f-stddev">{{.processedData.r.max}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>平均值</td>
+                                                    <td id="r-mean">{{.processedData.r.mean}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>方差</td>
+                                                    <td id="r-variance">{{.processedData.r.variance}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>标准差</td>
+                                                    <td id="r-stddev">{{.processedData.r.stddev}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-xs3">
+                                        <div class="stats-card">
+                                            <h3>F(消费频率)</h3>
+                                            <table class="layui-table">
+                                                <tr>
+                                                    <td>最小值</td>
+                                                    <td id="f-stddev">{{.processedData.f.min}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>最大值</td>
+                                                    <td id="f-stddev">{{.processedData.f.max}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>平均值</td>
+                                                    <td id="f-mean">{{.processedData.f.mean}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>方差</td>
+                                                    <td id="f-variance">{{.processedData.f.variance}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>标准差</td>
+                                                    <td id="f-stddev">{{.processedData.f.stddev}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-xs3">
+                                        <div class="stats-card">
+                                            <h3>M(消费金额)</h3>
+                                            <table class="layui-table">
+                                                <tr>
+                                                    <td>最小值</td>
+                                                    <td id="f-stddev">{{.processedData.m.min}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>最大值</td>
+                                                    <td id="f-stddev">{{.processedData.m.max}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>平均值</td>
+                                                    <td id="m-mean">{{.processedData.m.mean}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>方差</td>
+                                                    <td id="m-variance">{{.processedData.m.variance}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>标准差</td>
+                                                    <td id="m-stddev">{{.processedData.m.stddev}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs6">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><h1>原始数据3D分布</h1></div>
+                        {{ .OriginalDataChartContent }}
+                        <div class="layui-card-body"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-xs6">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><h1>加权分组后数据3D分布</h1></div>
+                        {{ .ClusteredDataChartContent }}
+                        <div class="layui-card-body"></div>
+                    </div>
+                </div>
+                <div class="layui-col-xs6">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><h1>分组数据原始3D分布</h1></div>
+                        {{ .ClusteredOriginalDataChartContent }}
+                        <div class="layui-card-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

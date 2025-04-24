@@ -4,8 +4,10 @@ package kmeans
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"rfm_cluster/pkg/clusters"
+	"time"
 )
 
 // Kmeans configuration/option struct
@@ -44,6 +46,63 @@ func New() Kmeans {
 	return m
 }
 
+// initializeClustersKmeansPP 使用k-means++算法初始化聚类中心
+func initializeClustersKmeansPP(k int, dataset clusters.Observations) (clusters.Clusters, error) {
+	if k > len(dataset) {
+		return clusters.Clusters{}, fmt.Errorf("the size of the data set must at least equal k")
+	}
+
+	// 创建k个空集群
+	cc := make(clusters.Clusters, k)
+
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+
+	// 随机选择第一个聚类中心
+	// firstCenterIdx := r.Intn(len(dataset))
+	// 固定一个中心
+	firstCenterIdx := len(dataset) / 2
+	cc[0].Center = dataset[firstCenterIdx].Coordinates()
+
+	// 选择剩余的k-1个聚类中心
+	for i := 1; i < k; i++ {
+		// 计算每个点到最近聚类中心的距离的平方
+		distSquared := make([]float64, len(dataset))
+		sumDistSquared := 0.0
+
+		for j, point := range dataset {
+			// 找到最近的聚类中心
+			minDist := math.MaxFloat64
+			for c := 0; c < i; c++ {
+				dist := point.Distance(cc[c].Center)
+				if dist < minDist {
+					minDist = dist
+				}
+			}
+			distSquared[j] = minDist
+			sumDistSquared += minDist
+		}
+
+		// 使用距离的平方作为权重选择下一个中心点
+		targetValue := r.Float64() * sumDistSquared
+		currentSum := 0.0
+		nextCenterIdx := 0
+
+		// 根据权重概率选择下一个中心点
+		for j, dist := range distSquared {
+			currentSum += dist
+			if currentSum >= targetValue {
+				nextCenterIdx = j
+				break
+			}
+		}
+
+		cc[i].Center = dataset[nextCenterIdx].Coordinates()
+	}
+
+	return cc, nil
+}
+
 // Partition executes the k-means algorithm on the given dataset and
 // partitions it into k clusters
 func (m Kmeans) Partition(dataset clusters.Observations, k int) (clusters.Clusters, error) {
@@ -51,9 +110,10 @@ func (m Kmeans) Partition(dataset clusters.Observations, k int) (clusters.Cluste
 		return clusters.Clusters{}, fmt.Errorf("the size of the data set must at least equal k")
 	}
 
-	cc, err := clusters.New(k, dataset)
+	// 使用k-means++算法初始化聚类中心
+	cc, err := initializeClustersKmeansPP(k, dataset)
 	if err != nil {
-		return cc, err
+		return clusters.Clusters{}, err
 	}
 
 	points := make([]int, len(dataset))

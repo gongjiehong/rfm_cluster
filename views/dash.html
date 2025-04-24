@@ -9,14 +9,14 @@
     <body>
         <div class="layui-bg-gray" style="padding: 16px">
             <div class="layui-row layui-col-space15">
-                <div class="layui-col-xs6">
+                <div class="layui-col-xs12">
                     <div class="layui-card">
                         <div class="layui-card-header"><h1>原始数据特征</h1></div>
                         <div class="layui-card-body">
                             <div class="layui-container">
                                 <!-- 统计数据卡片 -->
                                 <div class="layui-row layui-col-space15">
-                                    <div class="layui-col-xs3">
+                                    <div class="layui-col-xs4">
                                         <div class="stats-card">
                                             <h3>R(最近一次消费)</h3>
                                             <table class="layui-table">
@@ -43,7 +43,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="layui-col-xs3">
+                                    <div class="layui-col-xs4">
                                         <div class="stats-card">
                                             <h3>F(消费频率)</h3>
                                             <table class="layui-table">
@@ -70,7 +70,7 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="layui-col-xs3">
+                                    <div class="layui-col-xs4">
                                         <div class="stats-card">
                                             <h3>M(消费金额)</h3>
                                             <table class="layui-table">
@@ -102,7 +102,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="layui-col-xs6">
+            </div>
+
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-xs12">
                     <div class="layui-card">
                         <div class="layui-card-header"><h1>原始数据3D分布</h1></div>
                         {{ .OriginalDataChartContent }}
@@ -112,14 +115,27 @@
             </div>
 
             <div class="layui-row layui-col-space15">
-                <div class="layui-col-xs6">
+                <div class="layui-col-xs12">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><h1>分组轮廓系数(2-8) 建议分组数：{{.EstimateCluters}}</h1></div>
+                        {{ .CluteredSilhouette }}
+                        <div class="layui-card-body"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-xs12">
                     <div class="layui-card">
                         <div class="layui-card-header"><h1>加权分组后数据3D分布</h1></div>
                         {{ .ClusteredDataChartContent }}
                         <div class="layui-card-body"></div>
                     </div>
                 </div>
-                <div class="layui-col-xs6">
+            </div>
+
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-xs12">
                     <div class="layui-card">
                         <div class="layui-card-header"><h1>分组数据原始3D分布</h1></div>
                         {{ .ClusteredOriginalDataChartContent }}

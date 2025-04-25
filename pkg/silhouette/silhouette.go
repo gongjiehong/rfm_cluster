@@ -46,6 +46,7 @@ func Scores(data clusters.Observations, kmax int, m Partitioner) ([]KScore, erro
 	var r []KScore = make([]KScore, kmax-1)
 
 	waitGroup := sync.WaitGroup{}
+	lock := sync.RWMutex{}
 	for k := 2; k <= kmax; k++ {
 		index := k - 2
 		waitGroup.Add(1)
@@ -56,11 +57,13 @@ func Scores(data clusters.Observations, kmax int, m Partitioner) ([]KScore, erro
 				panic(err)
 			}
 
+			lock.Lock()
 			r[index] = KScore{
 				Clusters: cc,
 				K:        k,
 				Score:    s,
 			}
+			lock.Unlock()
 		}(index)
 	}
 

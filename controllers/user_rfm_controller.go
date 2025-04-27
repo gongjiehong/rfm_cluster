@@ -35,7 +35,7 @@ func Index(c *gin.Context) {
 	// k := queryParams.Get("k")
 	purchaseEnd := queryParams.Get("purchase_end")
 
-	excel, err := excelize.OpenFile("论文数据8月前-未加权.xlsx")
+	excel, err := excelize.OpenFile("original_data.xlsx")
 	if err != nil {
 		c.JSON(http.StatusOK, err.Error())
 		return
@@ -53,10 +53,6 @@ func Index(c *gin.Context) {
 			continue
 		}
 
-		// if index%10 != 0 {
-		// 	continue
-		// }
-
 		rTime, err := time.Parse(time.DateOnly, row[6])
 		if err != nil {
 			log.Fatal(err)
@@ -66,7 +62,7 @@ func Index(c *gin.Context) {
 		temp := models.UserRFM{
 			UserID:            cast.ToUint64(row[0]),
 			Nickname:          row[1],
-			Birthday:          cast.ToInt64(row[2]),
+			Birthday:          row[2],
 			Gender:            cast.ToInt8(row[3]),
 			RecencyOriginal:   recency,
 			FrequencyOriginal: cast.ToFloat64(row[4]),
@@ -143,6 +139,20 @@ func Index(c *gin.Context) {
 		lock.Lock()
 		renderMap["ClusteredDataChartContent"] = processedRFMscatter3d
 		renderMap["ClusteredOriginalDataChartContent"] = originalRFMscatter3d
+		lock.Unlock()
+	}()
+
+	waitGroup.Add(1)
+	go func() {
+		defer waitGroup.Done()
+		err := WriteClusteredDataToExcel(scores[estimate-2].Clusters)
+		if err != nil {
+			c.JSON(http.StatusOK, err.Error())
+			return
+		}
+
+		lock.Lock()
+		renderMap["ClusteredDataExcel"] = "clustered_data.xlsx"
 		lock.Unlock()
 	}()
 
@@ -264,4 +274,52 @@ func ProcessSilhouetteLineChart(scores []silhouette.KScore) (template.HTML, erro
 		)
 
 	return template.HTML(line.RenderContent()), nil
+}
+
+func WriteClusteredDataToExcel(clusters clusters.Clusters) error {
+	excel := excelize.NewFile()
+
+	// 创建表头
+	headers := []string{
+		"user_id", "nickname", "birthday", "gender",
+		"recency_original", "frequency_original", "monetary_original",
+		"recency_weighted", "frequency_weighted", "monetary_weighted",
+		"cluster",
+	}
+
+	// 写入表头
+	for i, header := range headers {
+		cell := fmt.Sprintf("%c1", 'A'+i)
+		excel.SetCellValue("Sheet1", cell, header)
+	}
+
+	// 写入数据
+	row := 2
+	for clusterIndex, cluster := range clusters {
+		for _, o := range cluster.Observations {
+			rfm := o.(*models.UserRFM)
+
+			// 写入用户数据
+			excel.SetCellValue("Sheet1", fmt.Sprintf("A%d", row), rfm.UserID)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("B%d", row), rfm.Nickname)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("C%d", row), rfm.Birthday)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("D%d", row), rfm.Gender)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("E%d", row), rfm.RecencyOriginal)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("F%d", row), rfm.FrequencyOriginal)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("G%d", row), rfm.MonetaryOriginal)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("H%d", row), rfm.RecencyWeighted)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("I%d", row), rfm.FrequencyWeighted)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("J%d", row), rfm.MonetaryWeighted)
+			excel.SetCellValue("Sheet1", fmt.Sprintf("K%d", row), clusterIndex+1)
+
+			row++
+		}
+	}
+
+	// 保存文件
+	if err := excel.SaveAs("clustered_data.xlsx"); err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -12,7 +12,7 @@ import (
 type UserRFM struct {
 	UserID            uint64  `json:"user_id"`
 	Nickname          string  `json:"nickname"`
-	Birthday          int64   `json:"birthday"`
+	Birthday          string  `json:"birthday"`
 	Gender            int8    `json:"gender"`
 	RecencyOriginal   float64 `json:"recency_original"`
 	FrequencyOriginal float64 `json:"frequency_original"`

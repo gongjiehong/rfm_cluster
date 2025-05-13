@@ -59,9 +59,9 @@ func initializeClustersKmeansPP(k int, dataset clusters.Observations) (clusters.
 	r := rand.New(source)
 
 	// 随机选择第一个聚类中心
-	// firstCenterIdx := r.Intn(len(dataset))
+	firstCenterIdx := r.Intn(len(dataset))
 	// 固定一个中心
-	firstCenterIdx := len(dataset) / 2
+	// firstCenterIdx := len(dataset) / 2
 	cc[0].Center = dataset[firstCenterIdx].Coordinates()
 
 	// 选择剩余的k-1个聚类中心

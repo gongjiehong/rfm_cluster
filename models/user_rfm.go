@@ -77,6 +77,102 @@ func ProcessData(dataCollection []*UserRFM) (clusters.Observations, []silhouette
 func processRealRFMData(dataCollection []*UserRFM) clusters.Observations {
 	var d clusters.Observations
 
+	// barrier := len(dataCollection) / 5
+
+	// rsorted := make([]*UserRFM, len(dataCollection))
+	// fsorted := make([]*UserRFM, len(dataCollection))
+	// msorted := make([]*UserRFM, len(dataCollection))
+
+	// copy(rsorted, dataCollection)
+	// copy(fsorted, dataCollection)
+	// copy(msorted, dataCollection)
+	// slices.SortFunc(rsorted, func(a, b *UserRFM) int {
+	// 	if a.RecencyOriginal < b.RecencyOriginal {
+	// 		return -1
+	// 	} else if a.RecencyOriginal > b.RecencyOriginal {
+	// 		return 1
+	// 	} else {
+	// 		return 0
+	// 	}
+	// })
+
+	// slices.SortFunc(fsorted, func(a, b *UserRFM) int {
+	// 	if a.FrequencyOriginal < b.FrequencyOriginal {
+	// 		return -1
+	// 	} else if a.FrequencyOriginal > b.FrequencyOriginal {
+	// 		return 1
+	// 	} else {
+	// 		return 0
+	// 	}
+	// })
+
+	// slices.SortFunc(msorted, func(a, b *UserRFM) int {
+	// 	if a.MonetaryOriginal < b.MonetaryOriginal {
+	// 		return -1
+	// 	} else if a.MonetaryOriginal > b.MonetaryOriginal {
+	// 		return 1
+	// 	} else {
+	// 		return 0
+	// 	}
+	// })
+
+	// rbarrier := make([]float64, 4)
+	// fbarrier := make([]float64, 4)
+	// mbarrier := make([]float64, 4)
+	// for i := 1; i < 5; i++ {
+	// 	rbarrier[i-1] = rsorted[i*barrier].RecencyOriginal
+	// 	fbarrier[i-1] = fsorted[i*barrier].FrequencyOriginal
+	// 	mbarrier[i-1] = msorted[i*barrier].MonetaryOriginal
+	// }
+
+	// fmt.Println(rbarrier)
+	// fmt.Println(fbarrier)
+	// fmt.Println(mbarrier)
+
+	// for _, row := range dataCollection {
+	// 	var r, f, m float64 = 0.0, 0.0, 0.0
+	// 	if row.RecencyOriginal <= rbarrier[0] {
+	// 		r = 5
+	// 	} else if row.RecencyOriginal > rbarrier[0] && row.RecencyOriginal <= rbarrier[1] {
+	// 		r = 4
+	// 	} else if row.RecencyOriginal > rbarrier[1] && row.RecencyOriginal <= rbarrier[2] {
+	// 		r = 3
+	// 	} else if row.RecencyOriginal > rbarrier[2] && row.RecencyOriginal <= rbarrier[3] {
+	// 		r = 2
+	// 	} else if row.RecencyOriginal > rbarrier[3] {
+	// 		r = 1
+	// 	} else {
+	// 		r = 1
+	// 	}
+
+	// 	if row.FrequencyOriginal <= fbarrier[0] {
+	// 		f = 1
+	// 	} else if row.FrequencyOriginal > fbarrier[0] && row.FrequencyOriginal <= fbarrier[1] {
+	// 		f = 2
+	// 	} else if row.FrequencyOriginal > fbarrier[1] && row.FrequencyOriginal <= fbarrier[2] {
+	// 		f = 3
+	// 	} else if row.FrequencyOriginal > fbarrier[2] && row.FrequencyOriginal <= fbarrier[3] {
+	// 		f = 4
+	// 	} else if row.FrequencyOriginal > fbarrier[3] {
+	// 		f = 5
+	// 	} else {
+	// 		f = 5
+	// 	}
+
+	// 	if row.MonetaryOriginal <= mbarrier[0] {
+	// 		m = 1
+	// 	} else if row.MonetaryOriginal > mbarrier[0] && row.MonetaryOriginal <= mbarrier[1] {
+	// 		m = 2
+	// 	} else if row.MonetaryOriginal > mbarrier[1] && row.MonetaryOriginal <= mbarrier[2] {
+	// 		m = 3
+	// 	} else if row.MonetaryOriginal > mbarrier[2] && row.MonetaryOriginal <= mbarrier[3] {
+	// 		m = 4
+	// 	} else if row.MonetaryOriginal > mbarrier[3] {
+	// 		m = 5
+	// 	} else {
+	// 		m = 5
+	// 	}
+
 	for _, row := range dataCollection {
 		var r, f, m float64 = 0.0, 0.0, 0.0
 		if row.RecencyOriginal == -1 {
@@ -111,9 +207,9 @@ func processRealRFMData(dataCollection []*UserRFM) clusters.Observations {
 			m = 2
 		} else if row.MonetaryOriginal > 14.99 && row.MonetaryOriginal <= 39.99 {
 			m = 3
-		} else if row.MonetaryOriginal > 39.99 && row.MonetaryOriginal <= 59.99 {
+		} else if row.MonetaryOriginal > 39.99 && row.MonetaryOriginal <= 71.88 {
 			m = 4
-		} else if row.MonetaryOriginal > 59.99 {
+		} else if row.MonetaryOriginal > 71.88 {
 			m = 5
 		}
 
